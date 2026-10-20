@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from common import BaseEvent
+from .common import BaseEvent
 
 FRAME_WIDTH_PX = 640
 FRAME_HEIGHT_PX = 512
