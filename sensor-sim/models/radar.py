@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from common import BaseEvent
+from .common import BaseEvent
 
 MAX_RANGE_M = 10_000.0
 REF_RANGE_M = 1_000.0
