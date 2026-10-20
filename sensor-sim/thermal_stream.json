@@ -1,0 +1,83 @@
+[
+  {
+    "timestamp_epoch_ms": 1760718240000,
+    "node_id": "edge-sensor-node-01",
+    "sensor_type": "thermal_imager",
+    "frame_id": 10842,
+    "calibration": {
+      "emissivity": 0.95,
+      "reflected_temp_c": 22.0,
+      "ambient_temp_c": 22.5,
+      "lens_fov_deg": 45.0
+    },
+    "analytics": {
+      "max_target_temp_c": 87.3,
+      "min_target_temp_c": 21.9,
+      "avg_target_temp_c": 36.8,
+      "hotspot_pixel_coord": [1, 2],
+      "thermal_anomaly_detected": true
+    },
+    "thermal_matrix_c": [
+      [22.1, 22.3, 22.5, 22.4, 22.2, 22.1, 22.0, 22.1],
+      [22.0, 85.1, 87.3, 23.0, 22.1, 22.0, 22.2, 22.3],
+      [21.9, 81.4, 84.0, 22.8, 22.2, 22.3, 22.1, 22.0],
+      [22.2, 22.1, 22.3, 22.5, 22.4, 22.1, 22.0, 22.2],
+      [22.1, 22.0, 22.2, 22.3, 22.1, 22.0, 22.2, 22.1],
+      [22.0, 22.2, 22.1, 22.0, 22.2, 22.3, 22.1, 22.0]
+    ]
+  },
+  {
+    "timestamp_epoch_ms": 1760718240100,
+    "node_id": "edge-sensor-node-01",
+    "sensor_type": "thermal_imager",
+    "frame_id": 10843,
+    "calibration": {
+      "emissivity": 0.95,
+      "reflected_temp_c": 22.0,
+      "ambient_temp_c": 22.5,
+      "lens_fov_deg": 45.0
+    },
+    "analytics": {
+      "max_target_temp_c": 89.1,
+      "min_target_temp_c": 21.8,
+      "avg_target_temp_c": 37.4,
+      "hotspot_pixel_coord": [1, 3],
+      "thermal_anomaly_detected": true
+    },
+    "thermal_matrix_c": [
+      [22.1, 22.3, 22.5, 22.4, 22.2, 22.1, 22.0, 22.1],
+      [22.0, 84.8, 87.9, 89.1, 22.3, 22.0, 22.2, 22.3],
+      [21.8, 80.9, 85.2, 23.1, 22.2, 22.3, 22.1, 22.0],
+      [22.2, 22.1, 22.3, 22.5, 22.4, 22.1, 22.0, 22.2],
+      [22.1, 22.0, 22.2, 22.3, 22.1, 22.0, 22.2, 22.1],
+      [22.0, 22.2, 22.1, 22.0, 22.2, 22.3, 22.1, 22.0]
+    ]
+  },
+  {
+    "timestamp_epoch_ms": 1760718240200,
+    "node_id": "edge-sensor-node-01",
+    "sensor_type": "thermal_imager",
+    "frame_id": 10844,
+    "calibration": {
+      "emissivity": 0.95,
+      "reflected_temp_c": 22.0,
+      "ambient_temp_c": 22.6,
+      "lens_fov_deg": 45.0
+    },
+    "analytics": {
+      "max_target_temp_c": 91.4,
+      "min_target_temp_c": 22.0,
+      "avg_target_temp_c": 38.1,
+      "hotspot_pixel_coord": [1, 3],
+      "thermal_anomaly_detected": true
+    },
+    "thermal_matrix_c": [
+      [22.1, 22.3, 22.5, 22.4, 22.2, 22.1, 22.0, 22.1],
+      [22.0, 83.2, 88.5, 91.4, 22.5, 22.0, 22.2, 22.3],
+      [22.0, 80.1, 86.8, 23.4, 22.2, 22.3, 22.1, 22.0],
+      [22.2, 22.1, 22.3, 22.5, 22.4, 22.1, 22.0, 22.2],
+      [22.1, 22.0, 22.2, 22.3, 22.1, 22.0, 22.2, 22.1],
+      [22.0, 22.2, 22.1, 22.0, 22.2, 22.3, 22.1, 22.0]
+    ]
+  }
+]
