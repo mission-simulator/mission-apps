@@ -1,4 +1,9 @@
-FROM ubuntu:latest
-LABEL authors="trahman"
+FROM python:3.13-slim
+WORKDIR /app
 
-ENTRYPOINT ["top", "-b"]
+COPY requirements.txt .
+RUN pip install -r requirements.txt --no-cache-dir
+
+COPY . /app/
+
+CMD ["python", "main.py"]
