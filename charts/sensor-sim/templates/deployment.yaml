@@ -1,0 +1,37 @@
+{{- range .Values.sensors }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-{{ .name }}
+  labels:
+    app: sensor-sim
+    sensor: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sensor-sim
+      sensor: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: sensor-sim
+        sensor: {{ .name }}
+    spec:
+      containers:
+        - name: sensor
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            - name: SENSOR_TYPE
+              value: {{ .type | quote }}
+            - name: SENSOR_ID
+              value: {{ .name | quote }}
+            - name: NODE_ID
+              value: {{ $.Values.nodeId | quote }}
+            - name: RATE_HZ
+              value: {{ .rateHz | quote }}
+          resources:
+            {{ toYaml $.Values.resources | nindent 12 }}
+{{- end }}
