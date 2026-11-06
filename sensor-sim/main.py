@@ -4,6 +4,7 @@ import time
 
 from config import load_config
 from sensors import SENSOR_CLASSES
+from sink import HttpSink
 
 
 def main() -> None:
@@ -14,12 +15,16 @@ def main() -> None:
 
     interval = 1 / cfg.rate_hz
     sensor = SENSOR_CLASSES[cfg.sensor_type](cfg.node_id, cfg.sensor_id, interval)
+    sink = HttpSink(cfg.ingest_url) if cfg.ingest_url else None
 
     next_tick = time.monotonic()
     while True:
         event = sensor.read()
         if event is not None:
-            print(event.model_dump_json(), flush=True)
+            line = event.model_dump_json()
+            print(line, flush=True)
+            if sink:
+                sink.send(line)
         next_tick += interval * random.uniform(0.9, 1.1)
         time.sleep(max(0.0, next_tick - time.monotonic()))
 

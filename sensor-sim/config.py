@@ -8,6 +8,7 @@ class Config:
     node_id: str
     sensor_id: str
     rate_hz: float
+    ingest_url: str | None
 
 
 def load_config() -> Config:
@@ -17,4 +18,5 @@ def load_config() -> Config:
         node_id=os.getenv("NODE_ID", "edge-sensor-node-01"),
         sensor_id=os.getenv("SENSOR_ID", f"{sensor_type}-01"),
         rate_hz=float(os.getenv("RATE_HZ", "1")),
+        ingest_url=os.getenv("INGEST_URL") or None,
     )
