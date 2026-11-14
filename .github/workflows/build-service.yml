@@ -1,0 +1,93 @@
+name: build-service
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        type: string
+        required: true
+      bump:
+        type: boolean
+        default: true
+    secrets:
+      APP_PRIVATE_KEY:
+        required: true
+
+jobs:
+  build-and-bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: build-${{ inputs.service }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Compute image tag
+        id: meta
+        run: echo "tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ inputs.service }}/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.service }}:${{ steps.meta.outputs.tag }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=${{ inputs.service }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.service }}
+
+      - name: Create GitHub App token for mission-gitops
+        if: ${{ inputs.bump }}
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: mission-gitops
+
+      - name: Bump image tag in mission-gitops
+        if: ${{ inputs.bump }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SERVICE: ${{ inputs.service }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${OWNER}/mission-gitops.git" gitops
+          cd gitops
+          f="charts/${SERVICE}/values.yaml"
+          sed -i "s|^  repository: .*|  repository: ghcr.io/${OWNER}/${SERVICE}|; s|^  tag: .*|  tag: \"${TAG}\"|" "$f"
+          if git diff --quiet; then
+            echo "No change needed"
+            exit 0
+          fi
+          changed=$(git diff --numstat | awk '{s+=$1+$2} END{print s+0}')
+          if [ "$changed" -gt 4 ]; then
+            echo "Unexpected diff size ($changed lines), refusing to push"
+            git diff
+            exit 1
+          fi
+          git config user.name "mission-ci-bump[bot]"
+          git config user.email "mission-ci-bump[bot]@users.noreply.github.com"
+          git commit -am "ci: ${SERVICE} -> ${TAG} (${GITHUB_REPOSITORY}@${GITHUB_SHA::7})"
+          for i in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            git pull --rebase
+          done
+          exit 1

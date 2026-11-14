@@ -1,0 +1,27 @@
+name: ingest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ingest/**'
+      - 'libs/**'
+      - '.dockerignore'
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Also bump the tag in mission-gitops
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-service.yml
+    with:
+      service: ingest
+      bump: ${{ github.event_name != 'workflow_dispatch' || inputs.bump }}
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
